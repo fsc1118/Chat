@@ -1,10 +1,10 @@
 from flask import Flask, request
 from service.user_service import create_user_service, login_service
 from service.auth import is_token_valid
-from service.post_service import create_new_post
+from service.post_service import create_new_post, get_posts_with_pagination
 app = Flask(__name__)
 
-@app.route("/login", methods=["POST"])
+@app.route("/api/login", methods=["POST"])
 def login():
     # Get the username, password, and auth token from the request body
     username = request.json["username"]
@@ -23,7 +23,7 @@ def login():
     else:
         return "Incorrect username or password", 400
 
-@app.route("/register", methods=["POST"])
+@app.route("/api/register", methods=["POST"])
 def register():
     # Get the username and password from the request body
     username = request.json["username"] 
@@ -46,7 +46,7 @@ def register():
     else:
         return "Error", 500
 
-@app.route("/post", methods=["POST"]):
+@app.route("/api/post", methods=["POST"])
 def post():
     # Get username and token from request body
     username = request.json["username"]
@@ -65,3 +65,16 @@ def post():
     content = request.json["content"]
     create_new_post(username, title, content)
     return "Post created", 200
+
+# Get posts with pagination
+@app.route("/api/post/<int:page>", methods=["GET"])
+def get_posts(page):
+    # Get the posts
+    posts = get_posts_with_pagination(page)
+    # Return the posts
+    return posts, 200
+
+# Serve the static files
+@app.route("/static/<path:path>")
+def static_files(path):
+    return app.send_static_file(path)

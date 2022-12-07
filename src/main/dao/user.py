@@ -54,3 +54,14 @@ class UserDAO:
         cursor.execute("UPDATE " + UserDAO.__TABLE_NAME + " SET token = ?, expiration_date = ? WHERE username = ?", token, timestamp, username)
         conn.commit()
         Util.close_connection(conn)
+    @staticmethod
+    def get_expiration_date_by_username(username:str)->str:
+        conn = Util.get_connection()
+        cursor = conn.cursor()
+        # Check if the user exists in the database
+        cursor.execute("SELECT * FROM " + UserDAO.__TABLE_NAME + " WHERE username = ?", username)
+        row = cursor.fetchone()
+        Util.close_connection(conn)
+        if row:
+            return row.expiration_date
+        raise Exception("User not found")

@@ -1,0 +1,74 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+</head>
+
+<body>
+
+    <form action="/login" method="post" style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    ">
+        <div>
+            <h1>Sign in</h1>
+        </div>
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required>
+        <br />
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required>
+        <br />
+        <button type="submit">Login</button>
+    </form>
+    <div id="error">
+    </div>
+    <script>
+        // Hide error div
+        document.getElementById('error').style.display = 'none';
+        // Get login form
+        const loginForm = document.querySelector('form');
+        // Add event listener to login form
+        loginForm.addEventListener('submit', (event) => {
+            // Prevent default form submission
+            event.preventDefault();
+            // Get username and password
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            // Create request body
+            const requestBody = {
+                username,
+                password
+            };
+            // Send POST request to /login
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+                .then((response) => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else if (response.status === 400) {
+                        document.getElementById('error').innerHTML = 'Invalid username or password';
+                        document.getElementById('error').style.display = 'block';
+                    } else {
+                        document.getElementById('error').innerHTML = 'Something went wrong';
+                        document.getElementById('error').style.display = 'block';
+                    }
+                })
+                .then(data => {
+                    localStorage.setItem('token', data.token);
+                    window.location.href = '/static/html/index.html';
+                });
+        });
+    </script>
+</body>
+
+</html>

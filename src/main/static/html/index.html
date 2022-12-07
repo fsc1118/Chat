@@ -1,0 +1,42 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+</head>
+
+<body>
+    <!-- Pagination Bar display current pages with button of prev and next-->
+    <div id="pagination-bar">
+        <button id="prev-page">Prev</button>
+        <span id="current-page"></span>
+        <button id="next-page">Next</button>
+    </div>
+</body>
+<script>
+    // Get current page from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = parseInt(urlParams.get('page')) || 1;
+    if (page < 1 || isNaN(page) || page === Infinity || page === -Infinity) {
+        window.location.href = 'index.html?page=1';
+    }
+    // Write current page to HTML
+    document.getElementById('current-page').innerHTML = page;
+    // Add event listener to prev page button
+    document.getElementById('prev-page').addEventListener('click', () => {
+        if (page === 1) {
+            return;
+        }
+        // Go to previous page
+        window.location.href = `index.html?page=${parseInt(page) - 1}`;
+    });
+    // Add event listener to next page button
+    document.getElementById('next-page').addEventListener('click', () => {
+        // Go to next page
+        window.location.href = `index.html?page=${parseInt(page) + 1}`;
+    });
+</script>
+
+
+
+</html>
